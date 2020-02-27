@@ -67,6 +67,7 @@ class XrplMonitorUtils(object):
                 msg_body = "Monitoring Connection Restarted"
                 self.err_log_custom(msg_body)
                 self.send_sms(msg_body)
+                self.reconnect_count = 0
             # Handle responses as they are received
             while True:
                 self.handle_response(await web_socket.recv())
@@ -121,7 +122,6 @@ class XrplMonitorUtils(object):
     def run_resilient_connection(self):
         try:
             asyncio.run(self.monitor_validator())
-            self.reconnect_count = 0
         except Exception as ex:
             self.reconnect_count += 1
             ex_message = "Connection Closed! Attempting restart #%s in 10 seconds" % self.reconnect_count
